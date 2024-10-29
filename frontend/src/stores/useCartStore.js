@@ -5,7 +5,7 @@ const toast = useToast()
 export const useCartStore = defineStore('cart',{
     state:()=>{
         return {
-            cartItems:[]
+            cartItems: JSON.parse(sessionStorage.getItem('cartItems')) || []
         }
     },
     getters:{
@@ -27,6 +27,7 @@ export const useCartStore = defineStore('cart',{
                 this.cartItems.push(item)
                 toast.success('Product added into cart.',{timeout:2000})
             }
+            this.addIntoSessionStorage()
         },
         increasedQty(item){
             const index = this.cartItems.findIndex(product => product.id === item.id)
@@ -36,6 +37,7 @@ export const useCartStore = defineStore('cart',{
             }else{
                 toast.error('Product not found.',{timeout:2000})
             }
+            this.addIntoSessionStorage()
         },
         decrementQty(item){
             const index = this.cartItems.findIndex(product => product.id === item.id)
@@ -50,6 +52,7 @@ export const useCartStore = defineStore('cart',{
             }else{
                 toast.error('Product not found.',{timeout:2000})
             }
+            this.addIntoSessionStorage()
         },
         removeFromCart(item){
             const index = this.cartItems.findIndex(product => product.id === item.id)
@@ -59,6 +62,10 @@ export const useCartStore = defineStore('cart',{
             }else{
                 toast.error('Product not found.',{timeout:2000})
             }
+            this.addIntoSessionStorage()
         },
+        addIntoSessionStorage(){
+            sessionStorage.setItem('cartItems', JSON.stringify(this.cartItems));
+        }
     }
 })
